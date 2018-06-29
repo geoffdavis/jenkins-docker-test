@@ -1,17 +1,19 @@
+#docker run -u root --rm -d -p 8080:8080 -p 50000:50000 -v jenkins-data:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock --name jenkins-blueocean jenkinsci/blueocean
 version: '3'
 
 services:
-  jenkins:
-    build: .
-    container_name: jenkins
+  jenkins-blueocean:
+    image: jenkinsci/blueocean
+    container_name: jenkins-blueocean
+    user: root
     privileged: true
     restart: always
     ports:
       - 8080:8080
+      - 50000:50000
     volumes:
-      - ./jenkins_home:/var/jenkins_home
-      - /var/run/docker/sock:/var/run/docker.sock
-      - /usr/bin/docker:/usr/bin/docker
+      - jenkins-data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
 
   registry:
     image: registry
@@ -19,3 +21,5 @@ services:
     restart: always
     ports:
       - 5000:5000
+volumes:
+    jenkins-data:
